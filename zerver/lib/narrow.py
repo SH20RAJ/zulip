@@ -125,7 +125,7 @@ class NarrowParameter(BaseModel):
             "with",
         ]
         operators_supporting_ids = ["pm-with", "dm"]
-        operators_non_empty_operand = {"search"}
+        operators_non_empty_operand = {"search", "reaction"}
 
         operator = self.operator
         if operator in operators_supporting_id:
@@ -161,6 +161,7 @@ def is_spectator_compatible(narrow: Iterable[NarrowParameter]) -> bool:
         "near",
         "id",
         "with",
+        "reaction",
     ]
     for element in narrow:
         operator = element.operator
@@ -272,6 +273,7 @@ class NarrowBuilder:
     # Things they may not do include
     #  * anything that would pull in additional rows, or information on
     #    other messages.
+    #
 
     def __init__(
         self,
@@ -299,6 +301,7 @@ class NarrowBuilder:
             "near": self.by_near,
             "id": self.by_id,
             "search": self.by_search,
+            "reaction": self.by_reaction,
             "dm": self.by_dm,
             # "pm-with:" is a legacy alias for "dm:"
             "pm-with": self.by_dm,
@@ -743,6 +746,26 @@ class NarrowBuilder:
             column("recipient_id", Integer).in_(recipient_ids),
         )
         return query.where(maybe_negate(cond))
+
+    def by_reaction(self, query: Select, operand: str, maybe_negate: ConditionTransform) -> Select:
+        if self.msg_id_column.name == "message_id":
+            # If the initial query uses `zerver_usermessage`
+            check_col = literal_column("zerver_usermessage.message_id", Integer)
+        else:
+            # If the initial query doesn't use `zerver_usermessage`
+            check_col = literal_column("zerver_message.id", Integer)
+        exists_cond = (
+            select(1)
+            .select_from(table("zerver_reaction"))
+            .where(
+                and_(
+                    check_col == literal_column("zerver_reaction.message_id", Integer),
+                    column("emoji_name", Text).ilike(operand),
+                )
+            )
+            .exists()
+        )
+        return query.where(maybe_negate(exists_cond))
 
     def by_search(self, query: Select, operand: str, maybe_negate: ConditionTransform) -> Select:
         if settings.USING_PGROONGA:

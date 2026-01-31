@@ -664,6 +664,20 @@ class NarrowBuilderTest(ZulipTestCase):
             "NOT (EXISTS (SELECT 1 \nFROM zerver_reaction \nWHERE zerver_message.id = zerver_reaction.message_id))",
         )
 
+    def test_add_term_using_reaction_operator(self) -> None:
+        term = NarrowParameter(operator="reaction", operand="smile")
+        self._do_add_term_test(
+            term,
+            "EXISTS (SELECT 1 \nFROM zerver_reaction \nWHERE zerver_message.id = zerver_reaction.message_id AND zerver_reaction.emoji_name ILIKE %(emoji_name_1)s)",
+        )
+
+    def test_add_term_using_reaction_operator_negated(self) -> None:
+        term = NarrowParameter(operator="reaction", operand="smile", negated=True)
+        self._do_add_term_test(
+            term,
+            "NOT (EXISTS (SELECT 1 \nFROM zerver_reaction \nWHERE zerver_message.id = zerver_reaction.message_id AND zerver_reaction.emoji_name ILIKE %(emoji_name_1)s))",
+        )
+
     def test_add_term_using_has_operator_non_supported_operand_should_raise_error(self) -> None:
         term = NarrowParameter(operator="has", operand="non_supported")
         self.assertRaises(BadNarrowOperatorError, self._build_query, term)
