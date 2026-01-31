@@ -14,7 +14,7 @@ from django.http import HttpRequest, HttpResponse
 from zerver.decorator import webhook_view
 from zerver.lib.response import json_success
 from zerver.lib.typed_endpoint import JsonBodyPayload, typed_endpoint
-from zerver.lib.validator import WildValue, check_bool, check_none_or, check_string
+from zerver.lib.validator import WildValue, check_bool, check_int, check_none_or, check_string
 from zerver.lib.webhooks.common import check_send_webhook_message
 from zerver.models import UserProfile
 
@@ -38,6 +38,9 @@ def api_taiga_webhook(
     topic_name = "General"
     if message["data"].get("milestone") and "name" in message["data"]["milestone"]:
         topic_name = message["data"]["milestone"]["name"].tame(check_string)
+    elif "project" in message["data"]:
+        topic_name = message["data"]["project"]["name"].tame(check_string)
+
     check_send_webhook_message(request, user_profile, topic_name, content)
 
     return json_success(request)
@@ -284,4 +287,29 @@ def get_subject(message: WildValue, data_field: str | None = None) -> str:
     data = message["data"][data_field] if data_field is not None else message["data"]
     text = data.get("subject").tame(check_none_or(check_string)) or data["name"].tame(check_string)
     permalink = data.get("permalink").tame(check_none_or(check_string))
+    if not permalink and "project" in data and "ref" in data and "permalink" in data["project"]:
+        # Try to construct the permalink from project permalink and ref
+        project_permalink = data["project"]["permalink"].tame(check_string)
+        ref = data["ref"].tame(check_int)
+        type_map = {
+            "userstory": "us",
+            "issue": "issue",
+            "task": "task",
+            "epic": "epic",
+        }
+        # In relateduserstory events, we might be looking at "epic" or "user_story" data,
+        # but the message type itself is "relateduserstory".
+        # We need to infer the type for the URL construction.
+        # If data_field is passed, we can use it (epic or user_story).
+        # Otherwise fall back to message["type"].
+
+        object_type = data_field if data_field else message["type"].tame(check_string)
+        # Map user_story to userstory to match the type_map keys if needed,
+        # but standard types are usually correct.
+        if object_type == "user_story":
+            object_type = "userstory"
+
+        if object_type in type_map:
+            permalink = f"{project_permalink}/{type_map[object_type]}/{ref}"
+
     return format_subject(text, permalink)

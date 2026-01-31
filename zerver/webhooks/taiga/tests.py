@@ -16,7 +16,7 @@ class TaigaHookTests(WebhookTestCase):
         self.check_webhook("userstory_deleted", self.TOPIC_NAME, message)
 
     def test_taiga_userstory_created(self) -> None:
-        message = "[TomaszKolek](https://tree.taiga.io/profile/kolaszek) created user story **New userstory**."
+        message = "[TomaszKolek](https://tree.taiga.io/profile/kolaszek) created user story [New userstory](https://tree.taiga.io/project/kolaszek-tomkol/us/4)."
         self.check_webhook("userstory_created", self.TOPIC_NAME, message)
 
     def test_taiga_userstory_changed_unblocked(self) -> None:
