@@ -29,7 +29,7 @@ export function make_indicator(
     // width calculation, above, returns a result that's a few pixels
     // too small.  The container's div will be slightly too small,
     // but that's probably OK for our purposes.
-    $outer_container.css({"white-space": "nowrap"});
+    $outer_container.addClass("white-space-nowrap");
 
     $container.empty();
 
@@ -65,14 +65,14 @@ export function make_indicator(
     // These width calculations are tied to the spinner width and
     // margins defined via CSS
     if (width !== undefined) {
-        $container.css({width: `${(width + text_width) / legacy_em_in_px}em`});
+        $container.get(0)!.style.width = `${(width + text_width) / legacy_em_in_px}em`;
     } else {
-        $container.css({width: `${(38 + text_width) / legacy_em_in_px}em`});
+        $container.get(0)!.style.width = `${(38 + text_width) / legacy_em_in_px}em`;
     }
     if (height !== undefined) {
-        $container.css({height});
+        $container.get(0)!.style.height = `${height}px`;
     } else {
-        $container.css({height: 0});
+        $container.get(0)!.style.height = "0px";
     }
 
     $outer_container.data("destroying", false);
@@ -84,7 +84,8 @@ export function destroy_indicator($container: JQuery): void {
     }
     $container.data("destroying", true);
     $container.empty();
-    $container.css({width: 0, height: 0});
+    $container.get(0)!.style.width = "0px";
+    $container.get(0)!.style.height = "0px";
 }
 
 export function show_button_spinner($elt: JQuery, using_dark_theme: boolean): void {
@@ -93,7 +94,7 @@ export function show_button_spinner($elt: JQuery, using_dark_theme: boolean): vo
     } else {
         $elt.attr("src", loading_white_image);
     }
-    $elt.css("display", "inline-block");
+    $elt.addClass("inline-block");
 }
 
 export function show_spinner($button_element: JQuery, $spinner: JQuery): void {

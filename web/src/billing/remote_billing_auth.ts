@@ -22,7 +22,8 @@ function handle_submit_for_server_login_form(form: HTMLFormElement): void {
         $error_field.show();
         return;
     }
-    $("#server-login-form").find(".loader").css("display", "inline-block");
+    const $loader = $("#server-login-form").find(".loader");
+    $loader.get(0)!.style.display = "inline-block";
     $("#server-login-button .server-login-button-text").hide();
     form.submit();
 }
@@ -39,11 +40,14 @@ export function initialize(): void {
                 return;
             }
 
-            $("#server-login-form").find(".loader").css("display", "inline-block");
+            const $loader = $("#server-login-form").find(".loader");
+            $loader.get(0)!.style.display = "inline-block";
             $("#server-login-button .server-login-button-text").hide();
-            $("#remote-billing-confirm-email-form").find(".loader").css("display", "inline-block");
+            const $email_loader = $("#remote-billing-confirm-email-form").find(".loader");
+            $email_loader.get(0)!.style.display = "inline-block";
             $("#remote-billing-confirm-email-button .server-login-button-text").hide();
-            $("#remote-billing-confirm-login-form").find(".loader").css("display", "inline-block");
+            const $login_loader = $("#remote-billing-confirm-login-form").find(".loader");
+            $login_loader.get(0)!.style.display = "inline-block";
             $(
                 "#remote-billing-confirm-login-button .remote-billing-confirm-login-button-text",
             ).hide();

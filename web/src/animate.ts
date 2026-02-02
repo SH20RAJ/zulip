@@ -30,7 +30,7 @@ export function collapse_or_expand({
         const height = $content.outerHeight();
         // Set height of the blocker to the height of the content,
         // to avoid any content from showing below the last element.
-        $blocker.css("height", `${height}px`);
+        $blocker.get(0)!.style.height = `${height}px`;
         $content.addClass("content-expand-animation-start");
 
         let found_container_wrapper = false;
@@ -39,9 +39,7 @@ export function collapse_or_expand({
         $all_elements.each((_index, elt) => {
             if (found_container_wrapper) {
                 $(elt).addClass("mark-element-for-translation");
-                $(elt).css({
-                    transform: `translateY(-${height}px)`,
-                });
+                elt.style.transform = `translateY(-${height}px)`;
             }
             if (elt === $content[0]) {
                 found_container_wrapper = true;
@@ -54,10 +52,8 @@ export function collapse_or_expand({
         found_container_wrapper = false;
         $all_elements.each((_index, elt) => {
             if (found_container_wrapper) {
-                $(elt).css({
-                    transform: `translateY(0)`,
-                    transition: "transform 0.2s ease-in-out",
-                });
+                elt.style.transform = `translateY(0)`;
+                elt.style.transition = "transform 0.2s ease-in-out";
             }
             if (elt === $content[0]) {
                 found_container_wrapper = true;
@@ -69,16 +65,14 @@ export function collapse_or_expand({
     } else {
         // Collapse the container.
         const height = $content.outerHeight();
-        $blocker.css("height", `${height}px`);
+        $blocker.get(0)!.style.height = `${height}px`;
         $content.addClass("content-collapse-animation-start");
         let found_container_wrapper = false;
         $all_elements.each((_index, elt) => {
             if (found_container_wrapper) {
                 $(elt).addClass("mark-element-for-translation");
-                $(elt).css({
-                    transform: `translateY(-${height}px)`,
-                    transition: "transform 0.2s ease-in-out",
-                });
+                elt.style.transform = `translateY(-${height}px)`;
+                elt.style.transition = "transform 0.2s ease-in-out";
             }
             if (elt === $content[0]) {
                 found_container_wrapper = true;
@@ -95,13 +89,11 @@ export function collapse_or_expand({
     // Reset
     setTimeout(() => {
         $all_elements.each((_index, elt) => {
-            $(elt).css({
-                transform: "",
-                transition: "",
-            });
+            elt.style.transform = "";
+            elt.style.transition = "";
             $(elt).removeClass("mark-element-for-translation");
         });
-        $blocker.css("height", "");
+        $blocker.get(0)!.style.height = "";
         $content.removeClass(
             "content-expand-animation-start content-expand-animation-endcontent-collapse-animation-start content-collapse-animation-end",
         );

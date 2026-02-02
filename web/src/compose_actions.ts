@@ -91,7 +91,9 @@ function hide_box(): void {
     // This is the main hook for saving drafts when closing the compose box.
     drafts.update_draft();
     blur_compose_inputs();
-    $(".new_message_textarea").css("min-height", "");
+    $(".new_message_textarea").each((_index, element) => {
+        element.style.minHeight = "";
+    });
     compose_fade.clear_compose();
     // Assume a muted recipient row for the next time
     // the compose box is reopened
@@ -117,7 +119,9 @@ function show_compose_box(opts: ComposeActionsOpts): void {
     }
     compose_recipient.update_compose_for_message_type(opts_by_message_type);
     // When changing this, edit the 42px in _maybe_autoscroll
-    $(".new_message_textarea").css("min-height", "3em");
+    $(".new_message_textarea").each((_index, element) => {
+        element.style.minHeight = "3em";
+    });
     // Under certain circumstances, such as focusing in the
     // automatically-opened compose box in DMs, we want to
     // defer running the focus logic.
@@ -181,7 +185,9 @@ export let autosize_message_content = (opts: ComposeActionsStartOpts): void => {
                     maybe_scroll_up_selected_message(autosize_callback_opts);
                 }
                 const height = $(e.currentTarget).height()!;
-                const max_height = Number.parseFloat($(e.currentTarget).css("max-height"));
+                const max_height = Number.parseFloat(
+                    window.getComputedStyle(e.currentTarget).maxHeight,
+                );
                 // We add 5px to account for minor differences in height detected in Chrome.
                 if (height + 5 >= max_height) {
                     $("#compose").addClass("automatically-expanded");

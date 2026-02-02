@@ -3,7 +3,8 @@ import $ from "jquery";
 export function initialize(): void {
     $("#server-deactivate-form").validate({
         submitHandler(form) {
-            $("#server-deactivate-form").find(".loader").css("display", "inline-block");
+            const $loader = $("#server-deactivate-form").find(".loader");
+            $loader.get(0)!.style.display = "inline-block";
             $("#server-deactivate-button .server-deactivate-button-text").hide();
 
             form.submit();

@@ -129,7 +129,7 @@ function show_navigation_tour_video(navigation_tour_video_url: string | null): v
                 $skip_video_button
                     .removeClass("dialog_submit_button")
                     .addClass("dialog_exit_button");
-                $skip_video_button.css({"margin-left": "12px"});
+                $skip_video_button.get(0)!.style.marginLeft = "12px";
 
                 const $video = $<HTMLVideoElement>("#navigation-tour-video");
                 $video.on("play", () => {
@@ -147,21 +147,20 @@ function show_navigation_tour_video(navigation_tour_video_url: string | null): v
                         skip_video_button_text_updated = true;
                     }
                     if (video_ended_button_visible && current_time < $video_elem.duration) {
-                        $("#navigation-tour-video-ended-button-wrapper").css(
-                            "visibility",
-                            "hidden",
-                        );
+                        const $button_wrapper = $("#navigation-tour-video-ended-button-wrapper");
+                        $button_wrapper.get(0)!.style.visibility = "hidden";
                         video_ended_button_visible = false;
                         $video.removeClass("dimmed-background");
                     }
                 });
 
                 $video.on("ended", () => {
-                    $("#navigation-tour-video-ended-button-wrapper").css("visibility", "visible");
+                    const $button_wrapper = $("#navigation-tour-video-ended-button-wrapper");
+                    $button_wrapper.get(0)!.style.visibility = "visible";
                     video_ended_button_visible = true;
                     $video.addClass("dimmed-background");
-                    $skip_video_button.css("visibility", "hidden");
-                    $watch_later_button.css("visibility", "hidden");
+                    $skip_video_button.get(0)!.style.visibility = "hidden";
+                    $watch_later_button.get(0)!.style.visibility = "hidden";
                     // Exit fullscreen to make the 'video-ended-button-wrapper' button visible.
                     const $video_elem = util.the($video);
                     if (document.fullscreenElement === $video_elem) {

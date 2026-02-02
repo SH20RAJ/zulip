@@ -243,7 +243,7 @@ export function update_settings_button_for_sub(sub: StreamSubscription): void {
             $settings_button.parent(),
         );
         $parent_element._tippy?.destroy();
-        $settings_button.css("pointer-events", "");
+        $settings_button.get(0)!.style.pointerEvents = "";
         $settings_button.addClass("toggle-subscription-tooltip");
     } else {
         $settings_button.attr("title", "");
@@ -591,7 +591,7 @@ export function enable_or_disable_add_subscribers_elements(
             $container_elem.find(".pill").length === 0 && $input_element.text().length === 0;
         $add_subscribers_button.prop("disabled", !enable_elem || input_empty);
         if (enable_elem) {
-            $add_subscribers_button.css("pointer-events", "");
+            $add_subscribers_button.get(0)!.style.pointerEvents = "";
         }
     }
 }

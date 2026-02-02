@@ -173,7 +173,7 @@ function update_add_members_elements(group: UserGroup): void {
         if (user_group_edit_members.pill_widget.items().length > 0) {
             $button_element.prop("disabled", false);
         }
-        $button_element.css("pointer-events", "");
+        $button_element.get(0)!.style.pointerEvents = "";
         $add_members_container[0]?._tippy?.destroy();
         $add_members_container.removeClass("add_members_disabled");
     } else {
@@ -368,7 +368,7 @@ function update_group_membership_button(group_id: number): void {
 
     if (can_update_membership) {
         $group_settings_button.prop("disabled", false);
-        $group_settings_button.css("pointer-events", "");
+        $group_settings_button.get(0)!.style.pointerEvents = "";
         const $group_settings_button_wrapper: JQuery<tippy.ReferenceElement> =
             $group_settings_button.closest(".join_leave_button_wrapper");
         $group_settings_button_wrapper[0]?._tippy?.destroy();

@@ -111,14 +111,18 @@ class UserStatusSession {
         // status modal, we need this hack to make clicking outside
         // the emoji picker only close the emoji picker, and not the
         // whole user status modal.
-        $(".app, .header, .modal__overlay, #set-user-status-modal").css("pointer-events", "none");
+        $(".app, .header, .modal__overlay, #set-user-status-modal").each((_, element) => {
+            element.style.pointerEvents = "none";
+        });
     }
 
     static re_enable_click_events_for_other_elements(): void {
         // Re-enable clicking events for other elements after closing
         // the popover.  This is the inverse of the hack of in the
         // handler that opens the "user status modal" emoji picker.
-        $(".app, .header, .modal__overlay, #set-user-status-modal").css("pointer-events", "all");
+        $(".app, .header, .modal__overlay, #set-user-status-modal").each((_, element) => {
+            element.style.pointerEvents = "all";
+        });
     }
 
     /*
